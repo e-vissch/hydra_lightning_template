@@ -1,6 +1,6 @@
 # hydra_lightning_template
 Base using hydra/lightning for deep learning.
-This is very loosely based on HyenaDNA, it has probably diverged a little bit from there too. 
+This is very loosely based on HyenaDNA, but has diverged quite a bit.
 
 
 ### Overview
