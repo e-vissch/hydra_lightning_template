@@ -1,0 +1,22 @@
+# @package _global_
+defaults:
+  - _self_
+  - base_config # defined in schemas.py!
+  - pipeline: base_pipeline
+
+# We primarily use wandb so this is moved to top level in the config for convenience
+# Set `~wandb` or `wandb=null` or `wandb.mode=disabled` to disable logging
+# If other loggers are added, it would make sense to put this one level lower under train/ or logger/
+wandb:
+  project: dna
+  group: ""
+  job_type: training
+  mode: online # choices=['online', 'offline', 'disabled']
+  name: null
+  save_dir: "."
+  id: ${.name} # pass correct id to resume experiment!
+  # log_model: false
+
+hydra:
+  run:
+    dir: ./outputs/${now:%Y-%m-%d}/${now:%H-%M-%S-%f}

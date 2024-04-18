@@ -1,0 +1,8 @@
+hydra-core
+lightning
+pandas
+scikit-learn
+torch
+torchvision
+umap-learn
+wandb
