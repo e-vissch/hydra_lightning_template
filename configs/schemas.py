@@ -79,7 +79,7 @@ class TaskConfig:
 
 @dataclass
 class TrainConfig:
-    name: Literal["train", "pretrained"] = "train" # TODO check if literal accepted
+    name: str = "train" # Literal["train", "pretrained"] 
     saved_model: Optional[str] = None 
 
 
