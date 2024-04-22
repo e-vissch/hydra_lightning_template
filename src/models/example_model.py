@@ -1,13 +1,13 @@
-
-
 from functools import partial
 import torch 
 import torch.nn as nn
 from configs.schemas import ModelConfig
+from src.models.standalone_hyenadna import _init_weights
 from src.utils.config import get_object_from_registry
 
-embedding_registry = {}
-backbone_registry = {}
+from src.models.embeddings import registry as embedding_registry
+from src.models.backbone import registry as backbone_registry
+
 
 
 class ExampleModel(nn.Module):
@@ -23,22 +23,19 @@ class ExampleModel(nn.Module):
         # decoder depends on task
         self.decoder = decoder
 
+        # Initialize weights 
+        self.apply(partial(_init_weights, n_layer=config.n_layer))
 
-    def hidden_embeddings(self, inputs, position_features=None):
-        input_embeddings = self.embeddings(inputs, position_features=position_features)
-        return self.backbone(input_embeddings)
 
-    def forward(self, inputs, position_features=None):
-        hidden_states = self.hidden_embeddings(
-            inputs, position_features=position_features
-        )
+    def forward(self, inputs):
+        input_embeddings = self.embeddings(inputs)
+        hidden_states = self.hidden_embeddings(input_embeddings)
         return self.decoder(hidden_states)
     
 
-    def inference(self, inputs, position_features=None, hidden=False):
+    def inference(self, inputs):
         self.eval()
         with torch.inference_mode():
-            infer_func = self.hidden_embeddings if hidden else partial(self.forward)
-            output = infer_func(inputs, position_features=position_features)
+            output = self.forward(inputs)
         self.train()
         return output
