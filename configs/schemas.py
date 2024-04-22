@@ -61,6 +61,15 @@ class CheckpointConfig:
     auto_insert_metric_name: bool = False
     verbose: bool = True
 
+@dataclass
+class LRMConfig:
+    logging_interval: str = "step" # Literal["step","epoch"]
+
+@dataclass
+class CallbackConfig:
+    model_checkpoint: CheckpointConfig = field(default_factory=CheckpointConfig)
+    learning_rate_monitor: LRMConfig = field(default_factory=LRMConfig)
+
 
 @dataclass
 class ModelConfig:
@@ -100,7 +109,7 @@ class Config:
         default_factory=CosineSchedulerConfig
     )
     trainer: TrainerConfig = field(default_factory=TrainerConfig)
-    model_checkpoint: CheckpointConfig = field(default_factory=CheckpointConfig)
+    callbacks: CallbackConfig = field(default_factory=CallbackConfig)
     loader: LoaderConfig = field(default_factory=LoaderConfig)
 
     wandb: Optional[WandBConfig] = field(default_factory=WandBConfig)

@@ -1,6 +1,6 @@
 import hydra
 import lightning as L
-from lightning.pytorch.callbacks import ModelCheckpoint
+from lightning.pytorch.callbacks import ModelCheckpoint, LearningRateMonitor
 from lightning.pytorch.loggers import WandbLogger
 from omegaconf import DictConfig, OmegaConf
 
@@ -28,15 +28,17 @@ def setup_wandb(config: DictConfig):
         return get_logger(config)
 
 
-def add_model_checkpoint_callback(config: DictConfig, trainer_dict: DictConfig):
+
+def add_default_callbacks(config: DictConfig, trainer_dict: DictConfig):
     callbacks = trainer_dict.get("callbacks", [])
     callbacks.append(ModelCheckpoint(**config.model_checkpoint))
+    callbacks.append(LearningRateMonitor(**config.learning_rate_monitor))
     return trainer_dict | {"callbacks": callbacks}
 
 
 def get_trainer(config: DictConfig):
     logger = setup_wandb(config) if config.get("wandb") is not None else None
-    trainer_dict = add_model_checkpoint_callback(config, config.trainer)
+    trainer_dict = add_default_callbacks(config.callbacks, config.trainer)
     return L.Trainer(**trainer_dict, logger=logger)
 
 

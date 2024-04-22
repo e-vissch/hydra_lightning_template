@@ -21,13 +21,18 @@ trainer:
   global_batch_size: 1
 
 
-model_checkpoint:
-  monitor: "val/${task.loss}" # name of the logged metric which determines when model is improving
-  mode: "max" # can be "max" or "min"
-  save_top_k: 1 # save k best models (determined by above metric)
-  save_last: True # additionaly always save model from last epoch
-  auto_insert_metric_name: False
-  verbose: True
+callbacks:
+  model_checkpoint:
+    monitor: "val/${task.loss}" # name of the logged metric which determines when model is improving
+    mode: "max" # can be "max" or "min"
+    save_top_k: 1 # save k best models (determined by above metric)
+    save_last: True # additionaly always save model from last epoch
+    auto_insert_metric_name: False
+    verbose: True
+
+  learning_rate_monitor:
+    logging_interval: "step"
+
 
 train:
   name: "train"
