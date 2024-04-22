@@ -160,8 +160,8 @@ cython_debug/
 #.idea/
 
 # custom
-# .vscode/
-# .env/
+.vscode/
+.env/
 scratch/
 data/
 .DS_Store
