@@ -27,7 +27,7 @@ class RealDataModule(BaseDataModule):
     def __init__(
         self,
         data_getter,
-        task_info,
+        task,
         train_list,
         val_list,
         datamodule_config,
@@ -42,7 +42,7 @@ class RealDataModule(BaseDataModule):
         )
         self.loader_config = loader_config
 
-        self.task_info = task_info
+        self.task = task
 
     def train_dataloader(self):
         return DataLoader(dataset=self.train_dataset, **self.loader_config)
