@@ -1,10 +1,10 @@
 
 from dataclasses import dataclass, field
-from os import name
-from typing import Literal, Optional, Union
+from typing import List, Optional, Union
 
-from numpy import save
 from omegaconf import MISSING
+
+from src.utils.constants import MODULE_DEFUALT_LOSS
 
 INTERPOLATED_FROM_PARENT = MISSING
 
@@ -38,12 +38,12 @@ class TrainerConfig:
 
 @dataclass
 class LoaderConfig:
-    batch_size: int = INTERPOLATED_FROM_PARENT
+    batch_size: int = 5
 
 
 @dataclass
 class WandBConfig:
-    project: str = "dna"
+    project: str = "scarcity"
     group: str = ""
     job_type: str = "training"
     mode: str = "online"
@@ -71,25 +71,26 @@ class CallbackConfig:
     learning_rate_monitor: LRMConfig = field(default_factory=LRMConfig)
 
 
-@dataclass
-class ModelConfig:
-    pass
-
 
 @dataclass
 class DataModuleConfig:
     name: str = "datamodule"
+    dataset: dict = field(default_factory=dict)
+    loss: str = MODULE_DEFUALT_LOSS
+    loss_kwargs: dict = field(default_factory=dict)
+    metrics: List[str] = field(default_factory=list)
 
 
 @dataclass
-class TaskConfig:
-    ...
-
-
-@dataclass
-class TrainConfig:
+class TrainTypeConfig:
     name: str = "train" # Literal["train", "pretrained"] 
     saved_model: Optional[str] = None 
+
+@dataclass
+class ModelConfig:
+    embeddings: dict = field(default_factory=dict)
+    decoder: dict = field(default_factory=dict)
+    backbone: dict = field(default_factory=dict)
 
 
 def validate_config(config: "Config"):
@@ -99,9 +100,9 @@ def validate_config(config: "Config"):
 
 @dataclass
 class Config:
-    train: TrainConfig = field(default_factory=TrainConfig)
+    train_type: TrainTypeConfig = field(default_factory=TrainTypeConfig)
     model: ModelConfig = field(default_factory=ModelConfig)
-    task: TaskConfig = field(default_factory=TaskConfig)
+    task: dict = field(default_factory=dict)
     datamodule: DataModuleConfig = field(default_factory=DataModuleConfig)
 
     optimizer: OptimizerConfig = field(default_factory=OptimizerConfig)

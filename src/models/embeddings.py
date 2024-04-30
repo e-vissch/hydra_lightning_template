@@ -12,11 +12,6 @@ class SimpleCnaEmbedding(nn.Module):
         self.value_embeddings = nn.Linear(input_dim, embed_dim)
 
     def forward(self, inputs):
-        """
-        inputs: (batch, seqlen, input_dim)
-        position_features: (batch, seqlen)
-        """
-
         return self.value_embeddings(inputs)
 
 

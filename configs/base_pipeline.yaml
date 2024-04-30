@@ -6,6 +6,9 @@ defaults:
 
 scheduler: null
 
+loader:
+  batch_size: 5
+
 optimizer:
   lr: 6e-4
   weight_decay: 1e-5
@@ -18,12 +21,11 @@ trainer:
   log_every_n_steps: 10
   val_check_interval: 1.  # val every n batches
   limit_val_batches: 10
-  global_batch_size: 1
 
 
 callbacks:
   model_checkpoint:
-    monitor: "val/${task.loss}" # name of the logged metric which determines when model is improving
+    monitor: "val/loss" # name of the logged metric which determines when model is improving
     mode: "max" # can be "max" or "min"
     save_top_k: 1 # save k best models (determined by above metric)
     save_last: True # additionaly always save model from last epoch
@@ -34,6 +36,6 @@ callbacks:
     logging_interval: "step"
 
 
-train:
+train_type:
   name: "train"
   saved_model: null

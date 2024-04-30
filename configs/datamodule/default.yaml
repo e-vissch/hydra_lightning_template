@@ -1,0 +1,6 @@
+
+name: base
+dataset:
+  data_path: null
+  train_frac: 0.8
+loss: default_loss

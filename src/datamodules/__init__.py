@@ -1,3 +1,0 @@
-
-
-datamodules_registry = {}

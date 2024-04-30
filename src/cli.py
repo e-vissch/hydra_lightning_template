@@ -6,7 +6,7 @@ from omegaconf import DictConfig, OmegaConf
 
 from src.train_object import TrainObject
 from src.utils.config import get_object_from_registry, process_config, register_configs
-from src.datamodules import datamodules_registry
+from src.datamodules.real_datamodule import registry as datamodules_registry
 
 def setup_wandb(config: DictConfig):
     # Pass in wandb.init(config=) argument to get the nice 'x.y.0.z' hparams logged
@@ -33,7 +33,7 @@ def add_default_callbacks(config: DictConfig, trainer_dict: DictConfig):
     callbacks = trainer_dict.get("callbacks", [])
     callbacks.append(ModelCheckpoint(**config.model_checkpoint))
     callbacks.append(LearningRateMonitor(**config.learning_rate_monitor))
-    return trainer_dict | {"callbacks": callbacks}
+    return dict(trainer_dict) | {"callbacks": callbacks}
 
 
 def get_trainer(config: DictConfig):
@@ -52,7 +52,7 @@ def get_data(task, datamodule_config: DictConfig, loader_config):
 def train_from_config(config):
     trainer = get_trainer(config)
     model = TrainObject(config) # lightning wrapper around model, includes training logic
-    datamodule = get_data(model.task, config.datamodule)
+    datamodule = get_data(model.task, config.datamodule, config.loader)
     trainer.fit(model, datamodule)
 
 
@@ -62,6 +62,9 @@ def main(config: DictConfig):
     train_from_config(config)
 
 
-if __name__ == "__main__":
+def hydra_main():
     register_configs()
     main()
+
+if __name__ == "__main__": 
+    hydra_main()
