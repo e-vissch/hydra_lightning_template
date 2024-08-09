@@ -122,6 +122,6 @@ class TrainObject(L.LightningModule):
         if self.hparams.scheduler is None:
             return optimizer
         
-        lr_scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer)
+        lr_scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, **self.hparams.scheduler)
 
         return [optimizer], [lr_scheduler]
