@@ -83,19 +83,6 @@ class TrainObject(L.LightningModule):
     def validation_step(self, batch, batch_idx):
         return self.step(batch, prefix="val")
 
-    def get_scheduler(self, optimizer):
-        lr_scheduler_cls, scheduler_hparams = get_object_from_registry(
-            self.hparams.scheduler, scheduler_registry, init=False
-        )
-        interval = scheduler_hparams.pop("interval", "epoch")
-        lr_scheduler = lr_scheduler_cls(optimizer, **scheduler_hparams)
-        scheduler = {
-            "scheduler": lr_scheduler,
-            "interval": interval,  # 'epoch' or 'step'
-            "name": "trainer/lr",  # default is e.g. 'lr-AdamW'
-        }
-        return scheduler
-
     def configure_optimizers(self):
         # get param groups
         params_dict = defaultdict(list)
@@ -134,6 +121,7 @@ class TrainObject(L.LightningModule):
 
         if self.hparams.scheduler is None:
             return optimizer
-        lr_scheduler = torch.optim.lr_scheduler.CosineAnnealingLR
+        
+        lr_scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer)
 
         return [optimizer], [lr_scheduler]
